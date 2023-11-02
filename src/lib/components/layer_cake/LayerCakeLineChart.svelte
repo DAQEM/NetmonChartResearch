@@ -3,25 +3,29 @@
 	import AxisX from './components/AxisX.svelte';
 	import AxisY from './components/AxisY.svelte';
 	import Line from './components/Line.svelte';
+	import Area from './components/Area.svelte';
+	import interfaceDatasets from '$lib/datasets/interface';
 
-	export let x: string;
-	export let y: string;
-	export let data: any[];
+	let x: string = 'date';
+	let y: string = 'inOctets';
+	let data: any[] = interfaceDatasets.map((data) => {
+		return data.metrics;
+	})[0];
+
+	function formatX(value: number) {
+		return new Date(value).toLocaleTimeString();
+	}
+
+	function formatY(value: number) {
+		return value / 1000000;
+	}
 </script>
 
-<div class="chart-container">
-	<LayerCake {x} {y} {data}>
-		<Svg>
-			<AxisX />
-			<AxisY />
-			<Line stroke="#f0c" />
-		</Svg>
-	</LayerCake>
-</div>
-
-<style>
-	.chart-container {
-		width: 100%;
-		height: 500px;
-	}
-</style>
+<LayerCake {x} {y} {data}>
+	<Svg>
+		<AxisX formatTick={formatX} />
+		<AxisY formatTick={formatY} />
+		<Line />
+		<Area />
+	</Svg>
+</LayerCake>
